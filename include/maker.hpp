@@ -2,8 +2,8 @@
 // Created by Mpho Mbotho on 2020-10-06.
 //
 
-#ifndef TOOLS_LUSH_HPP
-#define TOOLS_LUSH_HPP
+#ifndef TOOLS_MAKER_HPP
+#define TOOLS_MAKER_HPP
 
 #include <cstddef>
 #include <map>
@@ -11,7 +11,7 @@
 
 struct lua_State;
 
-namespace lush {
+namespace maker {
 
     struct embedded_script {
         const char *name;
@@ -24,12 +24,12 @@ namespace lush {
         static void main(int argc, char **argv);
 
     private:
-        static int lushNow(lua_State *L);
-        static int lushLoad(lua_State* L);
-        static int lushCwd(lua_State* L);
-        static int lushEnv(lua_State* L);
-        static int lushGc(lua_State* L);
-        static int lushExit(lua_State* L);
+        static int makerNow(lua_State *L);
+        static int makerLoad(lua_State* L);
+        static int makerCwd(lua_State* L);
+        static int makerEnv(lua_State* L);
+        static int makerGc(lua_State* L);
+        static int makerExit(lua_State* L);
         static int panicHandler(lua_State* L);
 
     private:
@@ -42,4 +42,4 @@ namespace lush {
         static lua_State *L;
     };
 }
-#endif //TOOLS_LUSH_HPP
+#endif //TOOLS_MAKER_HPP

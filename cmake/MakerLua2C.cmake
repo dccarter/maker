@@ -19,9 +19,9 @@ function(_LuaScript name)
         message(FATAL_ERROR "suil_lua2c requires a TARGET name to use in file")
     endif()
 
-    set(LUSH_LUAC luac)
+    set(MAKER_LUAC luac)
     if (LUA2C_BINARY)
-        set(LUSH_LUAC ${LUA2C_BINARY})
+        set(MAKER_LUAC ${LUA2C_BINARY})
     endif()
 
     if (NOT LUA2C_VARIABLE)
@@ -37,7 +37,7 @@ function(_LuaScript name)
     message(STATUS "Add lua script ${LUA2C_SCRIPT} for compilation")
     # compile the script
     add_custom_command(
-            COMMAND ${LUSH_LUAC} -o ${name}.out ${LUA2C_SCRIPT}
+            COMMAND ${MAKER_LUAC} -o ${name}.out ${LUA2C_SCRIPT}
             OUTPUT  ${name}.out
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             DEPENDS ${LUA2C_SCRIPT})
@@ -64,7 +64,7 @@ function(_LuaScript name)
     set(${LUA2C_TARGET}_LUA2C_SOURCES ${${LUA2C_TARGET}_LUA2C_SOURCES} ${${name}_C_FILE} PARENT_SCOPE)
 endfunction()
 
-#! LushLua2C : This function takes a collection of Lua scripts
+#! MakerLua2C : This function takes a collection of Lua scripts
 #  and generates C source files for building the scripts
 #
 # \arg:name the name of the target that will be used for generating the scripts
@@ -72,34 +72,34 @@ endfunction()
 # \param:OUTDIR the output directory for the scripts(default: CMAKE_CURRENT_BINARY_DIR/${name})
 # \param:BINARY path to luac binary (default: system luac)
 #
-function(LushLua2C name)
+function(MakerLua2C name)
     set(kvargs OUTDIR BINARY)
     set(kvvargs SCRIPTS)
-    cmake_parse_arguments(LUSH_LUA2C "" "${kvargs}" "${kvvargs}" ${ARGN})
+    cmake_parse_arguments(MAKER_LUA2C "" "${kvargs}" "${kvvargs}" ${ARGN})
 
-    if (NOT LUSH_LUA2C_SCRIPTS)
+    if (NOT MAKER_LUA2C_SCRIPTS)
         message(FATAL_ERROR "SuilLua2C function requires at least 1 script")
     endif()
 
     # Default to installed luac binary
-    if (NOT LUSH_LUA2C_BINARY)
-        set(LUSH_LUA2C_BINARY luac)
+    if (NOT MAKER_LUA2C_BINARY)
+        set(MAKER_LUA2C_BINARY luac)
     endif()
 
     # Default to CMAKE_CURRENT_BINARY_DIR/${name}
-    if (NOT LUSH_LUA2C_OUTDIR)
-        set(LUSH_LUA2C_OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/.generated/${name}")
-        file(MAKE_DIRECTORY ${LUSH_LUA2C_OUTDIR})
+    if (NOT MAKER_LUA2C_OUTDIR)
+        set(MAKER_LUA2C_OUTDIR "${CMAKE_CURRENT_BINARY_DIR}/.generated/${name}")
+        file(MAKE_DIRECTORY ${MAKER_LUA2C_OUTDIR})
     endif()
 
-    set(_SCRIPTS_DEFS  ${LUSH_LUA2C_OUTDIR}/defs.h)
-    set(_SCRIPTS_DECLS ${LUSH_LUA2C_OUTDIR}/decls.h)
+    set(_SCRIPTS_DEFS  ${MAKER_LUA2C_OUTDIR}/defs.h)
+    set(_SCRIPTS_DECLS ${MAKER_LUA2C_OUTDIR}/decls.h)
 
     file(WRITE ${_SCRIPTS_DECLS} "extern \"C\" {\n")
     file(WRITE ${_SCRIPTS_DEFS} "\n")
 
     set(${name}_LUA2C_SOURCES)
-    foreach(SCRIPT ${LUSH_LUA2C_SCRIPTS})
+    foreach(SCRIPT ${MAKER_LUA2C_SCRIPTS})
         string(REGEX REPLACE "[/-]" "_" tmp_SCRIPT_NAME ${SCRIPT})
         get_filename_component(SCRIPT_NAME ${tmp_SCRIPT_NAME} NAME_WE)
         # extern script parameters into a header file that can be included when
@@ -113,9 +113,9 @@ function(LushLua2C name)
         # compile the script and generate C code
         _LuaScript(${SCRIPT_NAME}
                 TARGET ${name}
-                BINARY ${LUSH_LUA2C_BINARY}
+                BINARY ${MAKER_LUA2C_BINARY}
                 SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/${SCRIPT}
-                OUTDIR ${LUSH_LUA2C_OUTDIR})
+                OUTDIR ${MAKER_LUA2C_OUTDIR})
     endforeach()
 
     # terminate header file

@@ -55,7 +55,7 @@ function applyDefaults(to, defaults)
 end
 
 function timestamp()
-	return Lush:now()
+	return Maker:now()
 end
 
 function pathExists(path)
@@ -73,11 +73,11 @@ end
 function shortPath(src, source)
 	local ok = 0
 	if src then
-		src,ok = src:gsub(Lush.SRC_CLEAN, '')
+		src,ok = src:gsub(Maker.SRC_CLEAN, '')
 	end
 
 	if ok == 0 and source ~= nil then
-		tmp, ok = source:gsub(Lush.PWD_CLEAN, '')
+		tmp, ok = source:gsub(Maker.PWD_CLEAN, '')
 		if ok ~= 0 then src = tmp end
 	end
 	return src

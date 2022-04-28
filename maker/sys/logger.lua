@@ -62,7 +62,7 @@ local File = setmetatable({
 	__call = function(this, attrs)
 		attrs = attrs or {}
 		if not attrs.dir then attrs.dir = Dirs.LOGS end
-		if not attrs.fname then attrs.fname = (Lush.Config.prefix or '') .. os.date('%Y_%m_%d_%H_%M_%S.txt') end
+		if not attrs.fname then attrs.fname = (Maker.Config.prefix or '') .. os.date('%Y_%m_%d_%H_%M_%S.txt') end
 		attrs.path   = attrs.dir..'/'..attrs.fname
 		attrs.handle = io.open(attrs.path, "a")
 		return setmetatable(attrs, {

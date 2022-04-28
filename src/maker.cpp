@@ -2,8 +2,8 @@
 // Created by Mpho Mbotho on 2020-10-06.
 //
 
-#include "../include/lush.hpp"
-#include "lush/decls.h"
+#include "../include/maker.hpp"
+#include "maker/decls.h"
 
 #include <lua.hpp>
 #include <cstring>
@@ -26,15 +26,15 @@ if (!lua_istable(L, 1)) {   \
     return luaL_error(L, "use Swept:%s instead of Swep.%s", func); \
 }
 
-namespace lush {
+namespace maker {
 
     static const embedded_script sScripts[] = {
-#include "lush/defs.h"
+#include "maker/defs.h"
     };
 
     lua_State *EmbeddedScripts::L{nullptr};
 
-    int EmbeddedScripts::lushLoad(lua_State *L)
+    int EmbeddedScripts::makerLoad(lua_State *L)
     {
         CALL_SYNTAX("load")
 
@@ -47,14 +47,14 @@ namespace lush {
         }
     }
 
-    int EmbeddedScripts::lushNow(lua_State *L)
+    int EmbeddedScripts::makerNow(lua_State *L)
     {
         CALL_SYNTAX("now")
         lua_pushnumber(L, time(nullptr));
         return 1;
     }
 
-    int EmbeddedScripts::lushEnv(lua_State *L)
+    int EmbeddedScripts::makerEnv(lua_State *L)
     {
         CALL_SYNTAX("env")
         if (!lua_isstring(L, 2)) {
@@ -70,7 +70,7 @@ namespace lush {
         return 1;
     }
 
-    int EmbeddedScripts::lushExit(lua_State *L)
+    int EmbeddedScripts::makerExit(lua_State *L)
     {
         CALL_SYNTAX("exit")
         if (!lua_isnumber(L, 2)) {
@@ -81,14 +81,14 @@ namespace lush {
         exit(num);
     }
 
-    int EmbeddedScripts::lushGc(lua_State *L)
+    int EmbeddedScripts::makerGc(lua_State *L)
     {
         CALL_SYNTAX("gc")
         lua_gc(L, LUA_GCCOLLECT, 0);
         return 0;
     }
 
-    int EmbeddedScripts::lushCwd(lua_State *L)
+    int EmbeddedScripts::makerCwd(lua_State *L)
     {
         CALL_SYNTAX("cwd");
         char buf[PATH_MAX] = {0};
@@ -179,12 +179,12 @@ namespace lush {
 
     void EmbeddedScripts::exportApis()
     {
-        exportLuaFunc(state(), EmbeddedScripts::lushLoad, "load");
-        exportLuaFunc(state(), EmbeddedScripts::lushNow,  "now");
-        exportLuaFunc(state(), EmbeddedScripts::lushEnv, "env");
-        exportLuaFunc(state(), EmbeddedScripts::lushGc, "gc");
-        exportLuaFunc(state(), EmbeddedScripts::lushExit, "exit");
-        exportLuaFunc(state(), EmbeddedScripts::lushCwd, "cwd");
+        exportLuaFunc(state(), EmbeddedScripts::makerLoad, "load");
+        exportLuaFunc(state(), EmbeddedScripts::makerNow,  "now");
+        exportLuaFunc(state(), EmbeddedScripts::makerEnv, "env");
+        exportLuaFunc(state(), EmbeddedScripts::makerGc, "gc");
+        exportLuaFunc(state(), EmbeddedScripts::makerExit, "exit");
+        exportLuaFunc(state(), EmbeddedScripts::makerCwd, "cwd");
     }
 
     static void createargtable(lua_State *L, char **argv, int argc, int script) {
@@ -220,21 +220,21 @@ namespace lush {
         // export some runtime native API's
         auto cwd = currdir();
         lua_atpanic(state(), EmbeddedScripts::panicHandler);
-        luaL_newmetatable(state(), "Lush_mt");
+        luaL_newmetatable(state(), "Maker_mt");
         lua_pushstring(state(), "__index");
         lua_newtable(state());
         EmbeddedScripts::exportApis();
         lua_settable(state(), -3);
         lua_newtable(state());
-        luaL_getmetatable(state(), "Lush_mt");
+        luaL_getmetatable(state(), "Maker_mt");
         lua_setmetatable(state(), -2);
         // add properties to the table
         setField(state(), "SRC",   SRC_DIR);
-        setField(state(), "VER", LUSH_VERSION);
+        setField(state(), "VER", MAKER_VERSION);
         setField(state(), "PWD", cwd.c_str());
         setField(state(), "OS_VARIANT", OS_VARIANT);
         setField(state(), OS_VARIANT, true);
-        lua_setglobal(state(), "Lush");
+        lua_setglobal(state(), "Maker");
 
         // build commandline arguments table
         lua_createtable(state(), argc, 1);

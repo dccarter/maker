@@ -4,15 +4,15 @@
 --- DateTime: 2020-02-29 1:46 p.m.
 ---
 
-Lush._loaded = {}
+Maker._loaded = {}
 function include(args)
     function loader(name)
         name = name:gsub('/', '_')
-        name = 'lush_'..name
-        if not Lush._loaded[name] then
-            Lush._loaded[name] = Lush:load(name)
+        name = 'maker_'..name
+        if not Maker._loaded[name] then
+            Maker._loaded[name] = Maker:load(name)
         end
-        return Lush._loaded[name]
+        return Maker._loaded[name]
     end
 
     if type(args) == 'string' then
@@ -41,8 +41,8 @@ import('sys/utils')
 import('sys/show')
 
 --- Clean up some macro's
-Lush.SRC_CLEAN = cleanString(Lush.SRC)
-Lush.PWD_CLEAN = cleanString(Lush.PWD)
+Maker.SRC_CLEAN = cleanString(Maker.SRC)
+Maker.PWD_CLEAN = cleanString(Maker.PWD)
 
 --- Setup Logging which is needed for printing to console
 local Logger,Exts = import('sys/logger')
@@ -57,25 +57,25 @@ Log = Logger {
     level = Logger.TRACE0
 }
 
---- a script or argument has to be provided to lush
+--- a script or argument has to be provided to maker
 if not arg[0] then
     show();
-    Lush:exit(-1);
+    Maker:exit(-1);
 end
 
---- if the next argument is an option for lush binary, then show
---- the output from lush
+--- if the next argument is an option for maker binary, then show
+--- the output from maker
 local arg0 = arg[0]
 if arg0:sub(1, 1) == '-' then
     if show(arg0) then
-        Lush:exit(0)
+        Maker:exit(0)
     else
-        Lush:exit(-1)
+        Maker:exit(-1)
     end
 end
 
---- Lush temporary directory
-TEMPDIR='/tmp/lush'
+--- Maker temporary directory
+TEMPDIR='/tmp/maker'
 --- list of temporary directory used as defualts
 Dirs = {
     SHELL   = 'sh',
@@ -102,5 +102,5 @@ os.execute('rm -rf '..Dirs.SHELL..'/*')
 if not ok then
     io.stderr:write(msg..'\n')
     io.stderr:write(debug.traceback()..'\n')
-    Lush:exit(1)
+    Maker:exit(1)
 end

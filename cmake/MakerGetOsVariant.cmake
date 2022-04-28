@@ -1,10 +1,10 @@
 #
-#! LushGetOsVariant This macro will return the OS variant of the system
+#! MakerGetOsVariant This macro will return the OS variant of the system
 # on which it is being executed
 #
 # \arg: OurVar the name of the variable to hold the
 #
-macro(LushGetOsVariant OutVar)
+macro(MakerGetOsVariant OutVar)
     if (APPLE)
         set(_os_variant osx)
     elseif(UNIX)

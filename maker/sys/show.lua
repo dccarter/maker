@@ -9,19 +9,19 @@ local function help(err)
     local printer = io.stderr
     if not err then
         printer = io.stdout
-        printer:write("lushg v"..Lush.VER.."\n")
+        printer:write("makerg v"..Maker.VER.."\n")
         printer:write([[
 
-Lush is a lua script runner which integrates nicely with shell scripting. i.e
-shell commands can be executed directly from a lua script to be run by lush.
+Maker is a lua script runner which integrates nicely with shell scripting. i.e
+shell commands can be executed directly from a lua script to be run by maker.
 
 ]])
     end
     printer:write([[
 Usage:
-    lush [[-v|--version]|[-h|--help]|[script <args...>]
+    maker [[-v|--version]|[-h|--help]|[script <args...>]
 
-    -v|--version     Show the version of lush
+    -v|--version     Show the version of maker
     -h|--help        Show this current help
     script <args...> Executes the given lua script with the given arguments
 
@@ -38,7 +38,7 @@ function show(arg)
         help(false)
         return true
     elseif arg == '-v' or arg == '--version' then
-        io.stdout:write("lush version: "..Lush.VER.."\n")
+        io.stdout:write("maker version: "..Maker.VER.."\n")
         return true
     else
         io.stderr:write("error: unrecognized command line argument '"..arg.."'")

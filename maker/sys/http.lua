@@ -3,7 +3,7 @@ local Json = import('sys/json')
 
 local function genid()
     local cmd
-    if Lush.OSX then
+    if Maker.OSX then
         cmd = X('_head', { c = 16 }, '/dev/urandom') |
               X('_md5', { r = true, q = true })
     else
